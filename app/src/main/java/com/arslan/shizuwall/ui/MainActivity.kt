@@ -1067,6 +1067,11 @@ class MainActivity : BaseActivity() {
 
         // Set current show system apps state
         checkboxShowSystem.isChecked = showSystemApps
+        
+        // Disable show system apps checkbox when firewall is enabled to prevent list changes during active filtering
+        if (isFirewallEnabled) {
+            checkboxShowSystem.isEnabled = false
+        }
 
         MaterialAlertDialogBuilder(this)
             .setTitle(R.string.sort)
