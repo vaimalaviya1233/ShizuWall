@@ -43,6 +43,8 @@ import com.arslan.shizuwall.model.AppInfo
 import com.arslan.shizuwall.widgets.FirewallWidgetProvider
 import com.arslan.shizuwall.repo.FirewallStateRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -1457,27 +1459,27 @@ class MainActivity : BaseActivity() {
         lifecycleScope.launch {
             val result = withContext(Dispatchers.IO) {
                 val pm = packageManager
-                val packages = pm.getInstalledPackages(0)
+                val packages = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
                 
-                val installedPackageNames = packages.map { it.packageName }.toSet()
+                val installedPackageNames = packages.mapTo(HashSet(packages.size)) { it.packageName }
 
                 val savedActive = loadActivePackages().toMutableSet()
-                val activeToRemove = savedActive.filter { !installedPackageNames.contains(it) }
+                val activeToRemove = savedActive.filterNot { installedPackageNames.contains(it) }
                 val appsWereRemoved = activeToRemove.isNotEmpty()
 
                 if (appsWereRemoved) {
-                    savedActive.removeAll(activeToRemove)
+                    savedActive.removeAll(activeToRemove.toSet())
                     saveActivePackages(savedActive)
                 }
 
                 val savedSelected = loadSelectedApps().toMutableSet()
-                val selectedToRemove = savedSelected.filter { !installedPackageNames.contains(it) }
+                val selectedToRemove = savedSelected.filterNot { installedPackageNames.contains(it) }
                 // Remove this app itself from saved selected apps if present
                 val selfPkg = this@MainActivity.packageName
                 var selectedChanged = false
                 if (savedSelected.remove(selfPkg)) selectedChanged = true
                 if (selectedToRemove.isNotEmpty()) {
-                    savedSelected.removeAll(selectedToRemove)
+                    savedSelected.removeAll(selectedToRemove.toSet())
                     selectedChanged = true
                 }
                 if (selectedChanged) {
@@ -1488,37 +1490,42 @@ class MainActivity : BaseActivity() {
                 }
 
                 val favoritePackages = loadFavoriteApps()
-                val temp = mutableListOf<AppInfo>()
-                for (packageInfo in packages) {
-                    val appInfo = packageInfo.applicationInfo ?: continue
-                    val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
+                
+                // Process packages in parallel chunks for better performance
+                val chunkSize = 50
+                val chunks = packages.chunked(chunkSize)
+                val results = chunks.map { chunk ->
+                    async(Dispatchers.Default) {
+                        val chunkResult = mutableListOf<AppInfo>()
+                        for (packageInfo in chunk) {
+                            val appInfo = packageInfo.applicationInfo ?: continue
+                            val isSystemApp = (appInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
 
-                    // skip apps that are disabled (treated as "offline" — don't show them even if system apps are enabled)
-                    if (!appInfo.enabled) continue
+                            // skip apps that are disabled
+                            if (!appInfo.enabled) continue
 
-                    val packageName = packageInfo.packageName
+                            val packageName = packageInfo.packageName
 
-                    // never show Shizuku app(s) or this app itself in the list
-                    if (packageName == "moe.shizuku.privileged.api") continue
-                    if (packageName == this@MainActivity.packageName) continue
+                            // never show Shizuku app(s) or this app itself
+                            if (packageName == "moe.shizuku.privileged.api") continue
+                            if (packageName == selfPkg) continue
 
-                    // skip apps that do not have internet permission (offline apps)
-                    val hasInternetPermission = pm.checkPermission(
-                        Manifest.permission.INTERNET,
-                        packageName
-                    ) == PackageManager.PERMISSION_GRANTED
-                    if (!hasInternetPermission) continue
+                            // Check INTERNET permission from pre-fetched permissions array
+                            val hasInternetPermission = packageInfo.requestedPermissions?.contains(Manifest.permission.INTERNET) == true
+                            if (!hasInternetPermission) continue
 
-                    val appName = pm.getApplicationLabel(appInfo).toString()
-                    // Removed bitmap loading to save RAM
-                    val isSelected = savedSelected.contains(packageName)
-                    val isFavorite = favoritePackages.contains(packageName)
-                    
-                    val installTime = packageInfo.firstInstallTime
+                            val appName = appInfo.loadLabel(pm).toString()
+                            val isSelected = savedSelected.contains(packageName)
+                            val isFavorite = favoritePackages.contains(packageName)
+                            val installTime = packageInfo.firstInstallTime
 
-                    temp.add(AppInfo(appName, packageName, isSelected, isSystemApp, isFavorite, installTime))
-                }
-                Triple(temp, savedActive, appsWereRemoved)
+                            chunkResult.add(AppInfo(appName, packageName, isSelected, isSystemApp, isFavorite, installTime))
+                        }
+                        chunkResult
+                    }
+                }.awaitAll().flatten()
+                
+                Triple(results, savedActive, appsWereRemoved)
             }
 
             val builtList = result.first
