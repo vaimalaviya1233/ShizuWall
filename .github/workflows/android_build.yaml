@@ -35,18 +35,18 @@ jobs:
       run: chmod +x gradlew
 
     # 4. Step: Build the 'debug' APK using Gradle
-    - name: Build with Gradle (assembleDebug)
-      run: ./gradlew assembleDebug
+    - name: Build with Gradle (assembleFullDebug)
+      run: ./gradlew assembleFullDebug
 
     # List the APK outputs so we can debug path issues on CI runners
     - name: List APK outputs
-      run: ls -la app/build/outputs/apk/debug || true
+      run: ls -la app/build/outputs/apk/full/debug || true
 
     # 5. Step: Upload the generated APK as an "Artifact"
     # This makes it downloadable from the Actions summary page
     - name: Upload APK as Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ShizuWall-debug.apk
-        # Upload any APK generated under the debug outputs. This handles universal and split APKs.
-        path: app/build/outputs/apk/debug/*.apk
+        name: ShizuWall-full-debug.apk
+        # Upload any APK generated under the full debug outputs. This handles universal and split APKs.
+        path: app/build/outputs/apk/full/debug/*.apk
