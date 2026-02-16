@@ -145,6 +145,7 @@
     <string name="github_description">ソースコードの表示と貢献</string>
     <string name="settings">設定</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">アプリを読み込み中</string>
 
     <string name="shizuku_setup_guide">Shizuku セットアップガイド</string>
     <string name="shizuku_step_1">まず、開発者向けオプションを有効にする必要があります。その後、Shizuku アプリを開いて「ペアリング」を押してください。</string>

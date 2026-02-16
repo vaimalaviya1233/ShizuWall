@@ -144,6 +144,7 @@
     <string name="github_description">Quellcode anzeigen und beitragen</string>
     <string name="settings">Einstellungen</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">Apps werden geladen</string>
     <string name="shizuku_setup_guide">Shizuku Einrichtungsanleitung</string>
     <string name="open_ladb_setup">LADB-Setup öffnen</string>
     <string name="working_mode_select_ladb_prompt">Wählen Sie zuerst den LADB-Modus, um LADB zu konfigurieren</string>

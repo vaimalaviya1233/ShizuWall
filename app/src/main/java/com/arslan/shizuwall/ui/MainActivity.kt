@@ -57,6 +57,8 @@ import com.arslan.shizuwall.shizuku.ShizukuSetupActivity
 import com.arslan.shizuwall.shell.ShellExecutorProvider
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.radiobutton.MaterialRadioButton
+import org.json.JSONArray
+import org.json.JSONObject
 
 class MainActivity : BaseActivity() {
     companion object {
@@ -93,6 +95,7 @@ class MainActivity : BaseActivity() {
 
         const val KEY_FIREWALL_UPDATE_TS = "firewall_update_ts"
         const val KEY_APP_MONITOR_ENABLED = "app_monitor_enabled"
+        private const val KEY_APPS_CACHE_JSON = "apps_cache_json_v1"
 
 
     }
@@ -104,6 +107,7 @@ class MainActivity : BaseActivity() {
     private lateinit var searchView: SearchView
     private lateinit var selectedCountText: TextView
     private lateinit var selectAllCheckbox: CheckBox
+    private lateinit var appListLoadingContainer: View
     private val appList = mutableListOf<AppInfo>()
     private val filteredAppList = mutableListOf<AppInfo>()
     private var isFirewallEnabled = false
@@ -120,6 +124,7 @@ class MainActivity : BaseActivity() {
     private var shizukuListenersAdded = false
 
     private var defaultItemAnimator: RecyclerView.ItemAnimator? = null
+    private var isAppListLoadingVisible = false
 
     private val requestPermissionResultListener = Shizuku.OnRequestPermissionResultListener { requestCode, grantResult ->
         onRequestPermissionsResult(requestCode, grantResult)
@@ -418,8 +423,9 @@ class MainActivity : BaseActivity() {
 
         // ensure the category chips reflect the saved "show system apps" preference
         updateCategoryChips()
-       
-        loadInstalledApps()
+
+        val hasWarmCache = restoreAppListFromCache()
+        loadInstalledApps(showLoadingIfListEmpty = !hasWarmCache)
 
         // If user enabled auto-enable and Shizuku is already present, attempt to auto-enable.
         try {
@@ -934,6 +940,7 @@ class MainActivity : BaseActivity() {
 
     private fun setupRecyclerView() {
         recyclerView = findViewById(R.id.recyclerView)
+        appListLoadingContainer = findViewById(R.id.appListLoadingContainer)
         recyclerView.layoutManager = LinearLayoutManager(this)
         appListAdapter = AppListAdapter(
             onAppClick = { appInfo ->
@@ -1455,8 +1462,12 @@ class MainActivity : BaseActivity() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun loadInstalledApps() {
+    private fun loadInstalledApps(showLoadingIfListEmpty: Boolean = false) {
         lifecycleScope.launch {
+            if (showLoadingIfListEmpty && appList.isEmpty()) {
+                setAppListLoadingVisible(true)
+            }
+
             val result = withContext(Dispatchers.IO) {
                 val pm = packageManager
                 val packages = pm.getInstalledPackages(PackageManager.GET_PERMISSIONS)
@@ -1560,9 +1571,75 @@ class MainActivity : BaseActivity() {
                 appList.addAll(builtList)
                 sortAndFilterApps(preserveScrollPosition = false)
             }
+
+            saveAppsCache(builtList)
+
+            if (isAppListLoadingVisible) {
+                setAppListLoadingVisible(false)
+            }
             
             updateSelectedCount()
         }
+    }
+
+    private fun restoreAppListFromCache(): Boolean {
+        val json = sharedPreferences.getString(KEY_APPS_CACHE_JSON, null) ?: return false
+        val selectedPackages = loadSelectedApps()
+        val favoritePackages = loadFavoriteApps()
+
+        val cachedList = try {
+            val arr = JSONArray(json)
+            val parsed = mutableListOf<AppInfo>()
+            for (i in 0 until arr.length()) {
+                val obj = arr.optJSONObject(i) ?: continue
+                val packageName = obj.optString("packageName")
+                if (packageName.isBlank()) continue
+
+                parsed.add(
+                    AppInfo(
+                        appName = obj.optString("appName", packageName),
+                        packageName = packageName,
+                        isSelected = selectedPackages.contains(packageName),
+                        isSystem = obj.optBoolean("isSystem", false),
+                        isFavorite = favoritePackages.contains(packageName),
+                        installTime = obj.optLong("installTime", 0L)
+                    )
+                )
+            }
+            parsed
+        } catch (_: Exception) {
+            emptyList()
+        }
+
+        if (cachedList.isEmpty()) return false
+
+        appList.clear()
+        appList.addAll(cachedList)
+        sortAndFilterApps(preserveScrollPosition = false)
+        return true
+    }
+
+    private fun saveAppsCache(apps: List<AppInfo>) {
+        val arr = JSONArray()
+        apps.forEach { app ->
+            arr.put(
+                JSONObject().apply {
+                    put("appName", app.appName)
+                    put("packageName", app.packageName)
+                    put("isSystem", app.isSystem)
+                    put("installTime", app.installTime)
+                }
+            )
+        }
+        sharedPreferences.edit().putString(KEY_APPS_CACHE_JSON, arr.toString()).apply()
+    }
+
+    private fun setAppListLoadingVisible(visible: Boolean) {
+        if (!::appListLoadingContainer.isInitialized) return
+        if (visible == isAppListLoadingVisible) return
+
+        isAppListLoadingVisible = visible
+        appListLoadingContainer.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     private fun saveSelectedApps() {

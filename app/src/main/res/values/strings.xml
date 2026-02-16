@@ -146,6 +146,7 @@
     <string name="github_description">View source code and contribute</string>
     <string name="settings">Settings</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">Loading apps</string>
 
     <string name="shizuku_setup_guide">Shizuku Setup Guide</string>
     <string name="shizuku_step_1">First of all you have to enable developer options. Afterwards open Shizuku app and press Pairing</string>

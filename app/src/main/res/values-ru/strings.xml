@@ -145,6 +145,7 @@
     <string name="github_description">Просмотреть исходный код и внести вклад</string>
     <string name="settings">Настройки</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">Загрузка приложений</string>
 
     <string name="shizuku_setup_guide">Руководство по настройке Shizuku</string>
     <string name="shizuku_step_1">Прежде всего, вам нужно включить параметры разработчика. Затем откройте приложение Shizuku и нажмите «Сопряжение».</string>

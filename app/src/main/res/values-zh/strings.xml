@@ -146,6 +146,7 @@
     <string name="github_description">查看源代码并贡献</string>
     <string name="settings">设置</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">正在加载应用</string>
     <string name="shizuku_setup_guide">Shizuku 设置指南</string>
     <string name="open_ladb_setup">打开 LADB 设置</string>
     <string name="working_mode_select_ladb_prompt">请先选择 LADB 模式以配置 LADB</string>

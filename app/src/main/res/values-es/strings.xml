@@ -145,6 +145,7 @@
     <string name="github_description">Ver código fuente y contribuir</string>
     <string name="settings">Ajustes</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">Cargando aplicaciones</string>
 
     <string name="shizuku_setup_guide">Guía de configuración de Shizuku</string>
     <string name="shizuku_step_1">Primero debes activar las opciones de desarrollador. Luego abre Shizuku y presiona Vincular.</string>

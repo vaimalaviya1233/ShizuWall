@@ -146,6 +146,7 @@
     <string name="github_description">Ver código fonte e contribuir</string>
     <string name="settings">Configurações</string>
     <string name="selected_count_zero">0</string>
+    <string name="loading_apps">Carregando apps</string>
     <string name="shizuku_setup_guide">Guia de Configuração do Shizuku</string>
     <string name="shizuku_step_1">Primeiro habilite as opções de desenvolvedor. Em seguida, abra o app Shizuku e toque em Pairing.</string>
     <string name="shizuku_step_2">Pressione o botão opções de desenvolvedor, ele o redirecionará para lá.</string>
