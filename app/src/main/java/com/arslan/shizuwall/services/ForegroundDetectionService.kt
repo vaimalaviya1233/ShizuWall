@@ -179,10 +179,73 @@ class ForegroundDetectionService : AccessibilityService() {
         when (key) {
             MainActivity.KEY_FIREWALL_ENABLED -> {
                 cachedFirewallEnabled = prefs.getBoolean(MainActivity.KEY_FIREWALL_ENABLED, false)
+
+                if (!cachedFirewallEnabled) {
+                    try {
+                        stopForeground(true)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to stop foreground on disable", e)
+                    }
+
+                    currentForegroundPackage = null
+                    lastManagedPackage = null
+                    pendingBlockPackage = null
+                    sharedPreferences.edit()
+                        .putString(MainActivity.KEY_SMART_FOREGROUND_APP, "")
+                        .putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())
+                        .apply()
+                } else if (cachedFirewallMode == FirewallMode.SMART_FOREGROUND) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            startForeground(
+                                NOTIFICATION_ID,
+                                buildNotification(null),
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                            )
+                        } else {
+                            startForeground(NOTIFICATION_ID, buildNotification(null))
+                        }
+                    } catch (e: IllegalStateException) {
+                        Log.w(TAG, "Failed to start foreground - already in foreground state", e)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to start foreground", e)
+                    }
+                }
             }
             MainActivity.KEY_FIREWALL_MODE -> {
                 val modeName = prefs.getString(MainActivity.KEY_FIREWALL_MODE, FirewallMode.DEFAULT.name)
                 cachedFirewallMode = FirewallMode.fromName(modeName)
+
+                if (cachedFirewallMode != FirewallMode.SMART_FOREGROUND) {
+                    try {
+                        stopForeground(true)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to stop foreground on mode change", e)
+                    }
+                    currentForegroundPackage = null
+                    lastManagedPackage = null
+                    pendingBlockPackage = null
+                    sharedPreferences.edit()
+                        .putString(MainActivity.KEY_SMART_FOREGROUND_APP, "")
+                        .putStringSet(MainActivity.KEY_ACTIVE_PACKAGES, emptySet())
+                        .apply()
+                } else if (cachedFirewallEnabled) {
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                            startForeground(
+                                NOTIFICATION_ID,
+                                buildNotification(null),
+                                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+                            )
+                        } else {
+                            startForeground(NOTIFICATION_ID, buildNotification(null))
+                        }
+                    } catch (e: IllegalStateException) {
+                        Log.w(TAG, "Failed to start foreground - already in foreground state", e)
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Failed to start foreground", e)
+                    }
+                }
             }
             MainActivity.KEY_WORKING_MODE -> {
                 synchronized(executorLock) { cachedShellExecutor = null }
