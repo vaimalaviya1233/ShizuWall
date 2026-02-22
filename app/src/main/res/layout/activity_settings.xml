@@ -76,6 +76,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/move_selected_top"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -132,6 +133,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/use_dynamic_color"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -192,6 +194,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/font"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -262,6 +265,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/skip_enable_dialog"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -439,6 +443,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/adb_broadcast_usage_title"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -490,6 +495,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/skip_error_dialog"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -548,6 +554,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/keep_failed_apps_selected"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -609,6 +616,7 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/working_mode_title"
                                 android:textSize="16sp"
+                                android:textStyle="bold"
                                 android:textColor="?android:attr/textColorPrimary" />
 
                             <TextView
@@ -685,6 +693,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/set_ladb_title"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -737,6 +746,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/auto_enable_on_shizuku_start"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -807,6 +817,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/app_monitor_service"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -880,6 +891,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/export_settings"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -933,6 +945,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/import_settings"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -999,6 +1012,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/donate"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
@@ -1052,6 +1066,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/github"
                             android:textSize="16sp"
+                            android:textStyle="bold"
                             android:textColor="?android:attr/textColorPrimary" />
 
                         <TextView
