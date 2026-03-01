@@ -667,17 +667,30 @@ class SettingsActivity : BaseActivity() {
             .show()
     }
 
-    private val supportedLocales = linkedMapOf(
-        "" to "System default",
-        "en" to "English",
-        "de" to "Deutsch",
-        "es" to "Espa\u00f1ol",
-        "ja" to "\u65e5\u672c\u8a9e",
-        "pt" to "Portugu\u00eas",
-        "ru" to "\u0420\u0443\u0441\u0441\u043a\u0438\u0439",
-        "tr" to "T\u00fcrk\u00e7e",
-        "zh" to "\u4e2d\u6587"
-    )
+    private fun buildSupportedLocales(): LinkedHashMap<String, String> {
+        val map = linkedMapOf("" to getString(R.string.language_system_default))
+        try {
+            val parser = resources.getXml(R.xml.locales_config)
+            var eventType = parser.eventType
+            while (eventType != android.util.XmlPullParser.END_DOCUMENT) {
+                if (eventType == android.util.XmlPullParser.START_TAG && parser.name == "locale") {
+                    val tag = parser.getAttributeValue(
+                        "http://schemas.android.com/apk/res/android", "name"
+                    )
+                    if (!tag.isNullOrEmpty()) {
+                        val locale = java.util.Locale.forLanguageTag(tag)
+                        val displayName = locale.getDisplayName(locale)
+                            .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                        map[tag] = displayName.ifEmpty { tag }
+                    }
+                }
+                eventType = parser.next()
+            }
+        } catch (_: Exception) {
+            map["en"] = "English"
+        }
+        return map
+    }
 
     private fun updateCurrentLanguageDisplay() {
         val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
@@ -685,15 +698,17 @@ class SettingsActivity : BaseActivity() {
             tvCurrentLanguage.text = getString(R.string.language_system_default)
         } else {
             val tag = currentLocales.get(0)?.toLanguageTag() ?: ""
-            tvCurrentLanguage.text = supportedLocales[tag] ?: getString(R.string.language_system_default)
+            val locale = java.util.Locale.forLanguageTag(tag)
+            tvCurrentLanguage.text = locale.getDisplayName(locale)
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                .ifEmpty { getString(R.string.language_system_default) }
         }
     }
 
     private fun showLanguageSelectorDialog() {
+        val supportedLocales = buildSupportedLocales()
         val localeKeys = supportedLocales.keys.toList()
         val localeNames = supportedLocales.values.toTypedArray()
-        // Replace first entry with the dynamic string
-        localeNames[0] = getString(R.string.language_system_default)
 
         val currentLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales()
         val currentTag = if (currentLocales.isEmpty) "" else (currentLocales.get(0)?.toLanguageTag() ?: "")
