@@ -6,7 +6,7 @@
   <strong>Android firewall without root or VPN.</strong><br/>
   Privacy-first, local-only, powered by Shizuku / local ADB daemon.
 </div>
-<div style="height: 20px;"></div>
+<div style="height: 20px;">&nbsp;</div>
 <p align="center">
   <img alt="Last commit" src="https://img.shields.io/github/last-commit/AhmetCanArslan/ShizuWall?style=flat-square" />
   <img alt="Repo size" src="https://img.shields.io/github/repo-size/AhmetCanArslan/ShizuWall?style=flat-square" />
