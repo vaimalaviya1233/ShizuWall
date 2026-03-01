@@ -1,18 +1,11 @@
-<p align="center">  
-  <header align="center">
-    <h1>
-      <a href="https://play.google.com/store/apps/details?id=com.arslan.shizuwall" style="text-decoration: none; line-height: 0;">
-        <img src="fastlane/metadata/android/en-US/images/icon.png" alt="ShizuWall Icon" width="56" style="vertical-align: middle; border-radius: 16%; margin-right: 10px;" />
-      </a>
-      ShizuWall
-    </h1>
-      <strong>Android firewall without root or VPN.</strong><br/>
+<div align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.arslan.shizuwall">
+    <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" alt="ShizuWall Icon" width="72" />
+  </a>
+  <h1>ShizuWall</h1>
+  <strong>Android firewall without root or VPN.</strong><br/>
   Privacy-first, local-only, powered by Shizuku / local ADB daemon.
-
-  </header>
-    
-
-</p>
+</div>
 
 <p align="center">
   <img alt="Last commit" src="https://img.shields.io/github/last-commit/AhmetCanArslan/ShizuWall?style=flat-square" />
