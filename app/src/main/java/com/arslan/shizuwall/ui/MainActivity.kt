@@ -2041,6 +2041,10 @@ class MainActivity : BaseActivity() {
             return Pair(successful, failed)
         }
 
+        if (firewallMode == FirewallMode.SMART_FOREGROUND) {
+            return Pair(successful, failed)
+        }
+
         for (packageName in packageNames) {
             // In Whitelist mode, the target apps passed to enableFirewall are ALWAYS the apps that SHOULD be blocked (the ones the user didn't select).
             val cmd = "cmd connectivity set-package-networking-enabled false $packageName"
