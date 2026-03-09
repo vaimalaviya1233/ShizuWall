@@ -15,6 +15,7 @@
     <string name="font_default">Default</string>
     <string name="font_ndot">Ndot</string>
     <string name="select_all">Select all</string>
+    <string name="scroll_to_top">Scroll to top</string>
     <string name="cat_favorites">Favorites</string>
     <string name="made_by">Made with ❤️ by Ahmet Can Arslan</string>
     <string name="ladb_not_supported_fdroid"> (not supported for fdroid version)</string>

@@ -165,6 +165,31 @@
             android:gravity="center" />
     </LinearLayout>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/scrollTopButton"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:minWidth="36dp"
+        android:layout_marginEnd="16dp"
+        android:contentDescription="@string/scroll_to_top"
+        app:icon="@drawable/arrow_upward_24px"
+        app:iconSize="18dp"
+        android:background="@drawable/round_button_bg"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="0dp"
+        android:gravity="center"
+        app:iconPadding="0dp"
+        app:layout_constraintTop_toBottomOf="@id/searchView"
+        app:layout_constraintBottom_toBottomOf="@id/categoryContainer"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <HorizontalScrollView
         android:id="@+id/categoryContainer"
         android:layout_width="0dp"
@@ -177,7 +202,7 @@
         android:clipToPadding="false"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toEndOf="@id/selectAllContainer"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/scrollTopButton"
         app:layout_constraintTop_toBottomOf="@id/searchView">
 
         <com.google.android.material.chip.ChipGroup

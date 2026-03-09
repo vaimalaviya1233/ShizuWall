@@ -419,6 +419,13 @@ class MainActivity : BaseActivity() {
         setupSelectAllCheckbox()
         setupRecyclerView()
 
+        val scrollTopButton: MaterialButton? = findViewById(R.id.scrollTopButton)
+        scrollTopButton?.setOnClickListener {
+            if (filteredAppList.isNotEmpty()) {
+                recyclerView.smoothScrollToPosition(0)
+            }
+        }
+
         // wire category bar AFTER views are created
         val categoryGroup = findViewById<ChipGroup>(R.id.categoryChipGroup)
         categoryGroup.setOnCheckedStateChangeListener { _, checkedIds ->
